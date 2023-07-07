@@ -25,7 +25,6 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=America/New_York
-      - LOG_CONFS=true #optional
     volumes:
       - /media/data/docker/wireguard:/config
       - /lib/modules:/lib/modules
