@@ -17,12 +17,20 @@ Set up SSH keys and disable SSH root login/password login. Optionally, change th
 The configuration file is `/etc/ssh/sshd_config`.
 
 ### UFW
-A bug in Raspberry Pi OS causes UFW to try to start before all of the network interfaces were up. 
-To enable UFW upon reboot, edit `/lib/systemd/system/ufw.service` and add the following line to the 
-end of the first section (`[Unit]`). [Link to discussion](https://askubuntu.com/a/1040584)
+UFW in Raspberry Pi OS may not start automatically on reboot because of incorrect loading during system boot.
+To enable UFW upon reboot, edit `/lib/systemd/system/ufw.service` and replace the following line
 ```
-After=network-pre.target
+Before=network.target
 ```
+with
+```
+Before=network-pre.target
+Wants=network-pre.target local-fs.target
+After=local-fs.target
+```
+See the [discussions](https://askubuntu.com/a/1040584) regarding this issue and fixes
+([1](https://git.launchpad.net/ufw/commit/?id=b3b831af27e7325085d91f42688620c13640f8f9), 
+ [2](https://git.launchpad.net/ufw/commit/?id=66457982870852f59a498039f2131764851226d3)) from the ufw repo.
 
 ## Services
 
