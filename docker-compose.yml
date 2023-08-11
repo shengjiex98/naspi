@@ -30,12 +30,20 @@ services:
       - /lib/modules:/lib/modules
     ports:
       - 51820:51820/udp
-      # qbittorrent ports
+      # qbittorrent
       - 8080:8080
       - 6881:6881
       - 6881:6881/udp
-      # radarr ports
+      # radarr
       - 7878:7878
+      # prowlarr
+      - 9696:9696
+      # sonarr
+      - 8989:8989
+      # lidarr
+      - 8686:8686
+      # readarr
+      - 8787:8787
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
@@ -65,4 +73,66 @@ services:
     volumes:
       - /media/data/docker/radarr:/config
       - /media/data/media:/media
+    restart: unless-stopped
+  
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    network_mode: service:wireguard
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /media/data/docker/prowlarr:/config
+    restart: unless-stopped
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    network_mode: service:wireguard
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /media/data/docker/sonarr:/config
+      - /media/data/media:/media
+    restart: unless-stopped
+  
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    network_mode: service:wireguard
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /media/data/docker/lidarr:/config
+      - /media/data/media:/media
+    restart: unless-stopped
+  
+  readarr:
+    image: lscr.io/linuxserver/readarr:develop
+    container_name: readarr
+    network_mode: service:wireguard
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /media/data/docker/readarr:/config
+      - /media/data/media:/media
+    restart: unless-stopped
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    environment:
+      - TZ=America/New_York
+      - WATCHTOWER_CLEANUP=true
+    volumes:
+      - /media/data/docker/watchtower:/config
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
