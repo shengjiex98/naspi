@@ -137,19 +137,47 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
 
-  code-server:
-    image: lscr.io/linuxserver/code-server:latest
-    container_name: code-server
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
-      # - DEFAULT_WORKSPACE=/config/workspace
+  # code-server:
+  #   image: lscr.io/linuxserver/code-server:latest
+  #   container_name: code-server
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=America/New_York
+  #     # - DEFAULT_WORKSPACE=/config/workspace
+  #   volumes:
+  #     - /media/data/docker/code-server:/config
+  #     - /media/data/projects:/projects
+  #   ports:
+  #     - 8443:8443
+  #   restart: unless-stopped
+
+  # openvscode-server:
+  #   image: lscr.io/linuxserver/openvscode-server:latest
+  #   container_name: openvscode-server
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=America/New_York
+  #     # - CONNECTION_TOKEN= #optional
+  #     # - CONNECTION_SECRET= #optional
+  #     # - SUDO_PASSWORD=password #optional
+  #     # - SUDO_PASSWORD_HASH= #optional
+  #   volumes:
+  #     - /media/data/docker/openvscode-server:/config
+  #     - /media/data/projects:/projects
+  #   ports:
+  #     - 3000:3000
+  #   restart: unless-stopped
+
+  ssserver-rust:
+    image: ghcr.io/shadowsocks/ssserver-rust:latest
+    container_name: ssserver-rust
     volumes:
-      - /media/data/docker/code-server:/config
-      - /media/data/projects:/projects
+      - /media/data/docker/ssserver-rust:/etc/shadowsocks-rust
     ports:
-      - 8443:8443
+      - 8388:8388
+      - 8388:8388/udp
     restart: unless-stopped
 
   # nextcloud:
