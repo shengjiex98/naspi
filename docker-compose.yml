@@ -62,6 +62,7 @@ services:
       - /media/data/media:/media
     restart: unless-stopped
 
+  # Movies
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
@@ -75,6 +76,7 @@ services:
       - /media/data/media:/media
     restart: unless-stopped
   
+  # Indexers
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
@@ -87,6 +89,7 @@ services:
       - /media/data/docker/prowlarr:/config
     restart: unless-stopped
 
+  # TV shows
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
@@ -100,6 +103,7 @@ services:
       - /media/data/media:/media
     restart: unless-stopped
   
+  # Music
   lidarr:
     image: lscr.io/linuxserver/lidarr:latest
     container_name: lidarr
@@ -113,6 +117,7 @@ services:
       - /media/data/media:/media
     restart: unless-stopped
   
+  # Books
   readarr:
     image: lscr.io/linuxserver/readarr:develop
     container_name: readarr
@@ -135,6 +140,30 @@ services:
     volumes:
       - /media/data/docker/watchtower:/config
       - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  nginx:
+    image: lscr.io/linuxserver/nginx:latest
+    container_name: nginx
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - /media/data/docker/nginx:/config
+    ports:
+      - 80:80
+      - 443:443
+    restart: unless-stopped
+
+  ssserver-rust:
+    image: ghcr.io/shadowsocks/ssserver-rust:latest
+    container_name: ssserver-rust
+    volumes:
+      - /media/data/docker/ssserver-rust:/etc/shadowsocks-rust
+    ports:
+      - 8388:8388
+      - 8388:8388/udp
     restart: unless-stopped
 
   # code-server:
@@ -169,16 +198,6 @@ services:
   #   ports:
   #     - 3000:3000
   #   restart: unless-stopped
-
-  ssserver-rust:
-    image: ghcr.io/shadowsocks/ssserver-rust:latest
-    container_name: ssserver-rust
-    volumes:
-      - /media/data/docker/ssserver-rust:/etc/shadowsocks-rust
-    ports:
-      - 8388:8388
-      - 8388:8388/udp
-    restart: unless-stopped
 
   # nextcloud:
   #   image: lscr.io/linuxserver/nextcloud:latest
