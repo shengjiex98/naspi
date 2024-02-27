@@ -26,7 +26,7 @@ services:
       - PGID=1000
       - TZ=America/New_York
     volumes:
-      - /home/pi/wireguard:/config
+      - /media/data/docker/wireguard:/config
       - /lib/modules:/lib/modules
     ports:
       - 51820:51820/udp
