@@ -29,11 +29,14 @@ services:
       - /media/data/docker/wireguard:/config
       - /lib/modules:/lib/modules
     ports:
+      # wireguard
       - 51820:51820/udp
       # qbittorrent
       - 8080:8080
       - 6881:6881
       - 6881:6881/udp
+      # sabnzbd
+      - 8085:8085
       # radarr
       - 7878:7878
       # prowlarr
@@ -59,6 +62,19 @@ services:
       - WEBUI_PORT=8080
     volumes:
       - /media/data/docker/qbittorrent:/config
+      - /media/data/media:/media
+    restart: unless-stopped
+
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    network_mode: service:wireguard
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /media/data/docker/sabnzbd:/config
       - /media/data/media:/media
     restart: unless-stopped
 
@@ -156,15 +172,15 @@ services:
       - 443:443
     restart: unless-stopped
 
-  ssserver-rust:
-    image: ghcr.io/shadowsocks/ssserver-rust:latest
-    container_name: ssserver-rust
-    volumes:
-      - /media/data/docker/ssserver-rust:/etc/shadowsocks-rust
-    ports:
-      - 8388:8388
-      - 8388:8388/udp
-    restart: unless-stopped
+  # ssserver-rust:
+  #   image: ghcr.io/shadowsocks/ssserver-rust:latest
+  #   container_name: ssserver-rust
+  #   volumes:
+  #     - /media/data/docker/ssserver-rust:/etc/shadowsocks-rust
+  #   ports:
+  #     - 8388:8388
+  #     - 8388:8388/udp
+  #   restart: unless-stopped
 
   # code-server:
   #   image: lscr.io/linuxserver/code-server:latest
