@@ -42,13 +42,14 @@ sudo apt install samba samba-common
 Then add sharing to the data hard drive and disable home sharing.
 The configuration file is `/etc/samba/smb.conf`
 
+
+
 ### Docker
-Use the `docker-compose.yml` file for the following services. 
-All containers are maintained by [linuxserver.io](https://fleet.linuxserver.io/)
-- WireGuard
-- qBittorrent
-- Plex
-- Radarr
+Use the `docker-compose.yml` file.
+Most containers are maintained by [linuxserver.io](https://fleet.linuxserver.io/)
+
+NGINX is used for redirects so that each services' port number doesn't need to be explicitly used.
+<!-- See [this doc](./nginx.md) for more details about configuring NGINX. -->
 
 In qBittorrent, go to `Options` -> `Advanced` and select `wg0` for `Network interface`.
 This prevents any IP leaks when used in conjuction with the WireGuard VPN.
