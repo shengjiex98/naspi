@@ -1,5 +1,6 @@
+# Environment variables DOCKER_CONFIG_DIR and DOCKER_DATA_DIR
+# are defined in the .env file in the same directory.
 ---
-version: "3"
 services:
   plex:
     image: lscr.io/linuxserver/plex:latest
@@ -11,8 +12,8 @@ services:
       - TZ=America/New_York
       - VERSION=docker
     volumes:
-      - /media/data/docker/plex:/config
-      - /media/data/media/:/media
+      - ${DOCKER_CONFIG_DIR}/plex:/config
+      - ${DOCKER_DATA_DIR}:/media
     restart: unless-stopped
   
   wireguard:
@@ -26,7 +27,7 @@ services:
       - PGID=1000
       - TZ=America/New_York
     volumes:
-      - /media/data/docker/wireguard:/config
+      - ${DOCKER_CONFIG_DIR}/wireguard:/config
       - /lib/modules:/lib/modules
     ports:
       # wireguard
@@ -61,8 +62,8 @@ services:
       - TZ=America/New_York
       - WEBUI_PORT=8080
     volumes:
-      - /media/data/docker/qbittorrent:/config
-      - /media/data/media:/media
+      - ${DOCKER_CONFIG_DIR}/qbittorrent:/config
+      - ${DOCKER_DATA_DIR}:/media
     restart: unless-stopped
 
   sabnzbd:
@@ -74,8 +75,8 @@ services:
       - PGID=1000
       - TZ=America/New_York
     volumes:
-      - /media/data/docker/sabnzbd:/config
-      - /media/data/media:/media
+      - ${DOCKER_CONFIG_DIR}/sabnzbd:/config
+      - ${DOCKER_DATA_DIR}:/media
     restart: unless-stopped
 
   # Movies
@@ -88,8 +89,8 @@ services:
       - PGID=1000
       - TZ=America/New_York
     volumes:
-      - /media/data/docker/radarr:/config
-      - /media/data/media:/media
+      - ${DOCKER_CONFIG_DIR}/radarr:/config
+      - ${DOCKER_DATA_DIR}:/media
     restart: unless-stopped
   
   # Indexers
@@ -102,7 +103,7 @@ services:
       - PGID=1000
       - TZ=America/New_York
     volumes:
-      - /media/data/docker/prowlarr:/config
+      - ${DOCKER_CONFIG_DIR}/prowlarr:/config
     restart: unless-stopped
 
   # TV shows
@@ -115,8 +116,8 @@ services:
       - PGID=1000
       - TZ=America/New_York
     volumes:
-      - /media/data/docker/sonarr:/config
-      - /media/data/media:/media
+      - ${DOCKER_CONFIG_DIR}/sonarr:/config
+      - ${DOCKER_DATA_DIR}:/media
     restart: unless-stopped
   
   # Music
@@ -129,8 +130,8 @@ services:
       - PGID=1000
       - TZ=America/New_York
     volumes:
-      - /media/data/docker/lidarr:/config
-      - /media/data/media:/media
+      - ${DOCKER_CONFIG_DIR}/lidarr:/config
+      - ${DOCKER_DATA_DIR}:/media
     restart: unless-stopped
   
   # Books
@@ -143,8 +144,8 @@ services:
       - PGID=1000
       - TZ=America/New_York
     volumes:
-      - /media/data/docker/readarr:/config
-      - /media/data/media:/media
+      - ${DOCKER_CONFIG_DIR}/readarr:/config
+      - ${DOCKER_DATA_DIR}:/media
     restart: unless-stopped
 
   watchtower:
@@ -154,7 +155,7 @@ services:
       - TZ=America/New_York
       - WATCHTOWER_CLEANUP=true
     volumes:
-      - /media/data/docker/watchtower:/config
+      - ${DOCKER_CONFIG_DIR}/watchtower:/config
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
 
@@ -166,7 +167,7 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - /media/data/docker/nginx:/config
+      - ${DOCKER_CONFIG_DIR}/nginx:/config
     ports:
       - 80:80
       - 443:443
@@ -176,7 +177,7 @@ services:
   #   image: ghcr.io/shadowsocks/ssserver-rust:latest
   #   container_name: ssserver-rust
   #   volumes:
-  #     - /media/data/docker/ssserver-rust:/etc/shadowsocks-rust
+  #     - ${DOCKER_CONFIG_DIR}/ssserver-rust:/etc/shadowsocks-rust
   #   ports:
   #     - 8388:8388
   #     - 8388:8388/udp
@@ -191,8 +192,8 @@ services:
   #     - TZ=America/New_York
   #     # - DEFAULT_WORKSPACE=/config/workspace
   #   volumes:
-  #     - /media/data/docker/code-server:/config
-  #     - /media/data/projects:/projects
+  #     - ${DOCKER_CONFIG_DIR}/code-server:/config
+  #     - ${DOCKER_DATA_DIR}/projects:/projects
   #   ports:
   #     - 8443:8443
   #   restart: unless-stopped
@@ -209,8 +210,8 @@ services:
   #     # - SUDO_PASSWORD=password #optional
   #     # - SUDO_PASSWORD_HASH= #optional
   #   volumes:
-  #     - /media/data/docker/openvscode-server:/config
-  #     - /media/data/projects:/projects
+  #     - ${DOCKER_CONFIG_DIR}/openvscode-server:/config
+  #     - ${DOCKER_DATA_DIR}/projects:/projects
   #   ports:
   #     - 3000:3000
   #   restart: unless-stopped
