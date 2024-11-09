@@ -173,15 +173,15 @@ services:
       - 443:443
     restart: unless-stopped
 
-  # ssserver-rust:
-  #   image: ghcr.io/shadowsocks/ssserver-rust:latest
-  #   container_name: ssserver-rust
-  #   volumes:
-  #     - ${DOCKER_CONFIG_DIR}/ssserver-rust:/etc/shadowsocks-rust
-  #   ports:
-  #     - 8388:8388
-  #     - 8388:8388/udp
-  #   restart: unless-stopped
+  ssserver-rust:
+    image: ghcr.io/shadowsocks/ssserver-rust:latest
+    container_name: ssserver-rust
+    volumes:
+      - ${DOCKER_CONFIG_DIR}/ssserver-rust:/etc/shadowsocks-rust
+    ports:
+      - 17931:17931
+      - 17931:17931/udp
+    restart: unless-stopped
 
   # code-server:
   #   image: lscr.io/linuxserver/code-server:latest
