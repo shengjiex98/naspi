@@ -6,6 +6,21 @@ A repo for my cute but mighty pi home server.
 
 ## Configurations
 
+### Automatically Mount Drives
+Find the UUID or PARTUUID of the drives to mount. One way to do so is by the following command
+```bash
+ls -l /dev/disk/by-partuuid/
+```
+Once the PARTUUID is found, add it to the end of `/etc/fstab` with the following configurations:
+```bash
+PARTUUID=fa95efff-086a-47be-8f53-524d437221e1	/media/drivename	ext4	defaults,noatime,nofail 0	0
+```
+and make the mount point immutable (to avoid writing to the unmounted mount point) by
+```bash
+chattr +i /media/drivename
+```
+The `nofail` option makes it so the system still boots normally even if the drive is not present. Once edited, test it with `sudo mount -a` or `sudo findmnt --verify --verbose`.
+
 ### Automatic Updates
 For system security, install `unattended-upgrades` package after installign the OS:
 ```bash
