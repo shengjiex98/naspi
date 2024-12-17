@@ -24,25 +24,10 @@ services:
     volumes:
       - ${DOCKER_CONFIG_DIR}/wireguard:/config
       - /lib/modules:/lib/modules
+    networks:
+      - wireguard_net
     ports:
-      # wireguard
       - 51820:51820/udp
-      # qbittorrent
-      - 8080:8080
-      - 6881:6881
-      - 6881:6881/udp
-      # sabnzbd
-      - 8085:8085
-      # radarr
-      - 7878:7878
-      # prowlarr
-      - 9696:9696
-      # sonarr
-      - 8989:8989
-      # lidarr
-      - 8686:8686
-      # readarr
-      - 8787:8787
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
@@ -50,77 +35,100 @@ services:
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
-    network_mode: service:wireguard
+    networks:
+      - wireguard_net
     env_file: "linuxserver-common.env"
     environment:
       - WEBUI_PORT=8080
     volumes:
       - ${DOCKER_CONFIG_DIR}/qbittorrent:/config
       - ${DOCKER_DATA_DIR}:/media
+    ports:
+      - 8080:8080
+      - 6881:6881
+      - 6881:6881/udp
     restart: unless-stopped
 
   sabnzbd:
     image: lscr.io/linuxserver/sabnzbd:latest
     container_name: sabnzbd
-    network_mode: service:wireguard
+    networks:
+      - wireguard_net
     env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/sabnzbd:/config
       - ${DOCKER_DATA_DIR}:/media
+    ports:
+      - 8085:8085
     restart: unless-stopped
 
   # Movies
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
-    network_mode: service:wireguard
+    networks:
+      - wireguard_net
     env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/radarr:/config
       - ${DOCKER_DATA_DIR}:/media
+    ports:
+      - 7878:7878
     restart: unless-stopped
   
   # Indexers
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
-    network_mode: service:wireguard
+    networks:
+      - wireguard_net
     env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/prowlarr:/config
+    ports:
+      - 9696:9696
     restart: unless-stopped
 
   # TV shows
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
-    network_mode: service:wireguard
+    networks:
+      - wireguard_net
     env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/sonarr:/config
       - ${DOCKER_DATA_DIR}:/media
+    ports:
+      - 8989:8989
     restart: unless-stopped
   
   # Music
   lidarr:
     image: lscr.io/linuxserver/lidarr:latest
     container_name: lidarr
-    network_mode: service:wireguard
+    networks:
+      - wireguard_net
     env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/lidarr:/config
       - ${DOCKER_DATA_DIR}:/media
+    ports:
+      - 8686:8686
     restart: unless-stopped
   
   # Books
   readarr:
     image: lscr.io/linuxserver/readarr:develop
     container_name: readarr
-    network_mode: service:wireguard
+    networks:
+      - wireguard_net
     env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/readarr:/config
       - ${DOCKER_DATA_DIR}:/media
+    ports:
+      - 8787:8787
     restart: unless-stopped
 
   watchtower:
@@ -158,9 +166,9 @@ services:
       - 8443:8443
     restart: unless-stopped
 
-  # networks:
-  #   wireguard_net:
-  #     driver: bridge
+networks:
+  wireguard_net:
+    driver: bridge
 
   # openvscode-server:
   #   image: lscr.io/linuxserver/openvscode-server:latest

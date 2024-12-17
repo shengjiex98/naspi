@@ -13,11 +13,11 @@ ls -l /dev/disk/by-partuuid/
 ```
 Once the PARTUUID is found, add it to the end of `/etc/fstab` with the following configurations:
 ```bash
-PARTUUID=fa95efff-086a-47be-8f53-524d437221e1	/media/drivename	ext4	defaults,noatime,nofail 0	0
+PARTUUID=fa95efff-086a-47be-8f53-524d437221e1	/mnt/drivename	ext4	defaults,noatime,nofail 0	0
 ```
 and make the mount point immutable (to avoid writing to the unmounted mount point) by
 ```bash
-chattr +i /media/drivename
+chattr +i /mnt/drivename
 ```
 The `nofail` option makes it so the system still boots normally even if the drive is not present. Once edited, test it with `sudo mount -a` or `sudo findmnt --verify --verbose`.
 
@@ -67,7 +67,12 @@ NGINX is used for redirects so that each services' port number doesn't need to b
 <!-- See [this doc](./nginx.md) for more details about configuring NGINX. -->
 
 In qBittorrent, go to `Options` -> `Advanced` and select `wg0` for `Network interface`.
-This prevents any IP leaks when used in conjuction with the WireGuard VPN.
+This prevents any IP leaks when used in conjuction with the WireGuard VPN. Test it with the following commands
+```bash
+$ docker exec -it qbittorrent bash
+root@69c8a5660698:/# curl ifconfig.io
+```
+And verify it is the VPN public IP address.
 
 For WireGuard, set up the kill-switch as specified in [this doc](./wg-killswitch.md).
 This should be placed in a pre-configured `wg0.conf` file containing credentials for the VPN service.
