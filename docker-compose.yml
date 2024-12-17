@@ -6,10 +6,8 @@ services:
     image: lscr.io/linuxserver/plex:latest
     container_name: plex
     network_mode: host
+    env_file: "linuxserver-common.env"
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
       - VERSION=docker
     volumes:
       - ${DOCKER_CONFIG_DIR}/plex:/config
@@ -22,10 +20,7 @@ services:
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
+    env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/wireguard:/config
       - /lib/modules:/lib/modules
@@ -56,10 +51,8 @@ services:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     network_mode: service:wireguard
+    env_file: "linuxserver-common.env"
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
       - WEBUI_PORT=8080
     volumes:
       - ${DOCKER_CONFIG_DIR}/qbittorrent:/config
@@ -70,10 +63,7 @@ services:
     image: lscr.io/linuxserver/sabnzbd:latest
     container_name: sabnzbd
     network_mode: service:wireguard
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
+    env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/sabnzbd:/config
       - ${DOCKER_DATA_DIR}:/media
@@ -84,10 +74,7 @@ services:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     network_mode: service:wireguard
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
+    env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/radarr:/config
       - ${DOCKER_DATA_DIR}:/media
@@ -98,10 +85,7 @@ services:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
     network_mode: service:wireguard
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
+    env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/prowlarr:/config
     restart: unless-stopped
@@ -111,10 +95,7 @@ services:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     network_mode: service:wireguard
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
+    env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/sonarr:/config
       - ${DOCKER_DATA_DIR}:/media
@@ -125,10 +106,7 @@ services:
     image: lscr.io/linuxserver/lidarr:latest
     container_name: lidarr
     network_mode: service:wireguard
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
+    env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/lidarr:/config
       - ${DOCKER_DATA_DIR}:/media
@@ -139,10 +117,7 @@ services:
     image: lscr.io/linuxserver/readarr:develop
     container_name: readarr
     network_mode: service:wireguard
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
+    env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/readarr:/config
       - ${DOCKER_DATA_DIR}:/media
@@ -162,10 +137,7 @@ services:
   nginx:
     image: lscr.io/linuxserver/nginx:latest
     container_name: nginx
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
+    env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/nginx:/config
     ports:
@@ -173,30 +145,22 @@ services:
       - 443:443
     restart: unless-stopped
 
-  ssserver-rust:
-    image: ghcr.io/shadowsocks/ssserver-rust:latest
-    container_name: ssserver-rust
+  code-server:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: code-server
+    env_file: "linuxserver-common.env"
+    # environment:
+      # - DEFAULT_WORKSPACE=/config/workspace
     volumes:
-      - ${DOCKER_CONFIG_DIR}/ssserver-rust:/etc/shadowsocks-rust
+      - ${DOCKER_CONFIG_DIR}/code-server:/config
+      - ${DOCKER_DATA_DIR}/projects:/projects
     ports:
-      - 17931:17931
-      - 17931:17931/udp
+      - 8443:8443
     restart: unless-stopped
 
-  # code-server:
-  #   image: lscr.io/linuxserver/code-server:latest
-  #   container_name: code-server
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=1000
-  #     - TZ=America/New_York
-  #     # - DEFAULT_WORKSPACE=/config/workspace
-  #   volumes:
-  #     - ${DOCKER_CONFIG_DIR}/code-server:/config
-  #     - ${DOCKER_DATA_DIR}/projects:/projects
-  #   ports:
-  #     - 8443:8443
-  #   restart: unless-stopped
+  # networks:
+  #   wireguard_net:
+  #     driver: bridge
 
   # openvscode-server:
   #   image: lscr.io/linuxserver/openvscode-server:latest
