@@ -7,7 +7,9 @@ PostUp = DROUTE=$(ip route | grep default | awk '{print $3}'); HOMENET=192.168.0
 PreDown = HOMENET=192.168.0.0/16; ip route delete $HOMENET; iptables -D OUTPUT ! -o %i -m mark ! --mark $(wg show %i fwmark) -m addrtype ! --dst-type LOCAL -j REJECT; iptables -D OUTPUT -d $HOMENET -j ACCEPT
 ```
 
-Note that these rules allow only `192.168.0.0/16` as the local network.
+Note that these rules allow only `192.168.0.0/16` as the local network. Some other local subnets:
+- Tailscale: `100.64.0.0/10`
+- Docker: `172.17.0.0/16` (it is part of `172.16.0.0/12`)
 
 ## Other configurations
 
