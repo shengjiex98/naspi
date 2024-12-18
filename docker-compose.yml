@@ -24,50 +24,49 @@ services:
     volumes:
       - ${DOCKER_CONFIG_DIR}/wireguard:/config
       - /lib/modules:/lib/modules
-    networks:
-      - wireguard_net
     ports:
-      - 51820:51820/udp
+      # - 51820:51820/udp   # Only for WireGuard **Server**
+      # sabnzbd
+      - 8085:8085
+      # qbittorrent
+      - 8080:8080
+      
+      # Ports for incoming qb connections. Not necessary when
+      # using wireguard because the traffic is tunneled and 
+      # never reaches host's network stack
+      # - 6881:6881
+      # - 6881:6881/udp
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv4.ip_forward=1
     restart: unless-stopped
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
-    networks:
-      - wireguard_net
+    network_mode: service:wireguard
     env_file: "linuxserver-common.env"
     environment:
       - WEBUI_PORT=8080
     volumes:
       - ${DOCKER_CONFIG_DIR}/qbittorrent:/config
       - ${DOCKER_DATA_DIR}:/media
-    ports:
-      - 8080:8080
-      - 6881:6881
-      - 6881:6881/udp
     restart: unless-stopped
 
   sabnzbd:
     image: lscr.io/linuxserver/sabnzbd:latest
     container_name: sabnzbd
-    networks:
-      - wireguard_net
+    network_mode: service:wireguard
     env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/sabnzbd:/config
       - ${DOCKER_DATA_DIR}:/media
-    ports:
-      - 8085:8085
     restart: unless-stopped
 
   # Movies
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
-    networks:
-      - wireguard_net
     env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/radarr:/config
@@ -80,8 +79,6 @@ services:
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
-    networks:
-      - wireguard_net
     env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/prowlarr:/config
@@ -93,8 +90,6 @@ services:
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
-    networks:
-      - wireguard_net
     env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/sonarr:/config
@@ -107,8 +102,6 @@ services:
   lidarr:
     image: lscr.io/linuxserver/lidarr:latest
     container_name: lidarr
-    networks:
-      - wireguard_net
     env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/lidarr:/config
@@ -121,8 +114,6 @@ services:
   readarr:
     image: lscr.io/linuxserver/readarr:develop
     container_name: readarr
-    networks:
-      - wireguard_net
     env_file: "linuxserver-common.env"
     volumes:
       - ${DOCKER_CONFIG_DIR}/readarr:/config
@@ -165,10 +156,6 @@ services:
     ports:
       - 8443:8443
     restart: unless-stopped
-
-networks:
-  wireguard_net:
-    driver: bridge
 
   # openvscode-server:
   #   image: lscr.io/linuxserver/openvscode-server:latest
